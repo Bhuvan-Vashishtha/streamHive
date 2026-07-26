@@ -12,7 +12,7 @@ import contentRouter from './route/contentRoute.js'
 
 
 dotenv.config()
-const port = process.env.PORT
+const port = process.env.PORT || 8000
 
 
 const app = express()
@@ -34,6 +34,6 @@ app.get("/" , (req,res)=>{
 })
 
 app.listen(port , ()=>{
-    console.log("Server Started")
+    console.log(`Server Started on ${port}`)
     connectDb()
 })
