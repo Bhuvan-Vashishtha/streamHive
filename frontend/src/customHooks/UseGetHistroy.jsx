@@ -17,8 +17,13 @@ const UseGetHistory = () => {
         const history = result.data || [];
 
         // ✅ Split videos & shorts
-        const videos = history.filter(item => item.contentType === "Video");
-        const shorts = history.filter(item => item.contentType === "Short");
+        const videos = history
+          .filter(item => item.contentType === "Video")
+          .sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
+
+        const shorts = history
+          .filter(item => item.contentType === "Short")
+          .sort((a, b) => new Date(b.watchedAt) - new Date(a.watchedAt));
 
         // Redux dispatch
         dispatch(setVideoHistory(videos));
