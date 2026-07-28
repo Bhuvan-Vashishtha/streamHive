@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FaVideo, FaPlay, FaPen, FaList } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import create from "../assets/create.png";
@@ -6,6 +6,14 @@ import create from "../assets/create.png";
 function CreatePage() {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+  const bottomRef = useRef(null);
+
+  const handleSelect = (id) => {
+    setSelected(id);
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
 
   const options = [
     { id: "video", icon: <FaVideo size={28} />, title: "Upload Video" },
@@ -44,7 +52,7 @@ function CreatePage() {
             key={opt.id}
             className={`bg-[#1f1f1f] border border-[#3f3f3f] rounded-lg p-6 flex flex-col items-center text-center justify-center cursor-pointer transition
               ${selected === opt.id ? "ring-2 ring-red-500" : "hover:bg-[#272727]"}`}
-            onClick={() => setSelected(opt.id)}
+            onClick={() => handleSelect(opt.id)} 
           >
             <div className="bg-[#272727] p-4 rounded-full mb-4">{opt.icon}</div>
             <h2 className="text-lg font-semibold">{opt.title}</h2>
@@ -53,7 +61,7 @@ function CreatePage() {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col items-center mt-16">
+      <div ref={bottomRef} className="flex flex-col items-center mt-16">
         <img src={create} alt="Create" className="w-20" />
         {!selected ? (
           <>
