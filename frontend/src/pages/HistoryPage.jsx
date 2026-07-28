@@ -28,7 +28,8 @@ const HistoryPage = () => {
   // ✅ calculate durations for videos
   useEffect(() => {
     if (Array.isArray(videoHistory) && videoHistory.length > 0) {
-      videoHistory.forEach((item) => {
+      videoHistory.filter((item) => item.contentId) // ✅ skip deleted/null content
+        .forEach((item) => {
         const video = item.contentId; // ✅ actual video object
         getVideoDuration(video.videoUrl, (formattedTime) => {
           setDurations((prev) => ({
@@ -50,22 +51,23 @@ const HistoryPage = () => {
         Shorts History
       </h2>
       <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-        {shortHistory?.length > 0 ? (
-          shortHistory.map((item) => {
-            const short = item.contentId; // ✅ actual short object
-            return (
-              <div key={item._id} className="flex-shrink-0">
-                <ShortsCard
-                  shortUrl={short.shortUrl}
-                  title={short.title}
-                  channelName={short.channel?.name}
-                  views={short.views}
-                  id={short._id}
-                  avatar={short.channel?.avatar}
-                />
-              </div>
-            );
-          })
+        {shortHistory?.filter((item) => item.contentId)?.length > 0 ? (
+          shortHistory.filter((item) => item.contentId) // ✅ skip entries where the short was deleted
+            .map((item) => {
+              const short = item.contentId; // ✅ actual short object
+              return (
+                <div key={item._id} className="flex-shrink-0">
+                  <ShortsCard
+                    shortUrl={short.shortUrl}
+                    title={short.title}
+                    channelName={short.channel?.name}
+                    views={short.views}
+                    id={short._id}
+                    avatar={short.channel?.avatar}
+                  />
+                </div>
+              );
+            })
         ) : (
           <p>No shorts watched yet.</p>
         )}
@@ -77,26 +79,28 @@ const HistoryPage = () => {
         Video History
       </h2>
       <div className="flex flex-wrap gap-6 mb-12">
-        {videoHistory?.length > 0 ? (
-          videoHistory.map((item) => {
-            const video = item.contentId; // ✅ actual video object
-            return (
-              <VideoCard
-                key={item._id}
-                thumbnail={video.thumbnail}
-                duration={durations[video._id] || "0:00"}
-                channelLogo={video.channel?.avatar}
-                title={video.title}
-                channelName={video.channel?.name}
-                views={`${video.views}`}
-                time={new Date(video.createdAt).toLocaleDateString()}
-                id={video._id}
-              />
-            );
-          })
-        ) : (
-          <p>No videos watched yet.</p>
-        )}
+        {videoHistory?.filter((item) => item.contentId)?.length > 0 ? (
+    videoHistory
+      .filter((item) => item.contentId) // ✅ skip entries where the video was deleted
+      .map((item) => {
+        const video = item.contentId; // ✅ actual video object
+        return (
+          <VideoCard
+            key={item._id}
+            thumbnail={video.thumbnail}
+            duration={durations[video._id] || "0:00"}
+            channelLogo={video.channel?.avatar}
+            title={video.title}
+            channelName={video.channel?.name}
+            views={`${video.views}`}
+            time={new Date(video.createdAt).toLocaleDateString()}
+            id={video._id}
+          />
+        );
+      })
+  ) : (
+    <p>No videos watched yet.</p>
+  )}
       </div>
     </div>
   );
