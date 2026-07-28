@@ -22,6 +22,7 @@ app.use(cors({
     if (
       !origin ||
       origin === "http://localhost:5173" ||
+      origin === "https://stream-hive-amber.vercel.app" ||
       /^https:\/\/stream-hive-.*-lucky-4eab\.vercel\.app$/.test(origin)
     ) {
       callback(null, true);
