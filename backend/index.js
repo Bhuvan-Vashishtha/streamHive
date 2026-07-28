@@ -17,14 +17,20 @@ const port = process.env.PORT || 8000
 
 const app = express()
 app.use(cookieParser())
-app.use(express.json())
 app.use(cors({
-   origin: [
-    "http://localhost:5173",
-    process.env.FRONTEND_URL
-  ],
-   credentials:true
-}))
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      origin === "http://localhost:5173" ||
+      /^https:\/\/stream-hive-.*-lucky-4eab\.vercel\.app$/.test(origin)
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 
 
